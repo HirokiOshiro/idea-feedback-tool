@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💭 アイデア独り言ツール - セルフ・オーサーシップ支援</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box {
+            border-left: 4px solid #2196f3;
+            background: #e8f4f8;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            border-left: 4px solid #ffc107;
+            background: #fff3cd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .info-box p, .warning-box p {
+            margin: 0;
+            color: #1976d2;
+            font-weight: 500;
+        }
+
+        .warning-box p {
+            color: #856404;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background: #e9ecef;
+        }
+
+        .checkbox-item input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .radio-item:hover {
+            background: #e9ecef;
+        }
+
+        .radio-item input {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #51cf66, #006600);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(81, 207, 102, 0.3);
+        }
+
+        .result-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .completion-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .completion-message h4 {
+            color: #155724;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .completion-message p {
+            color: #155724;
+            margin: 0 0 15px 0;
+            font-weight: 500;
+        }
+
+        .security-notice {
+            background: #ffff66;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .security-notice p {
+            color: #721c24;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .prompt-output {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            height: 400px;
+            border: none;
+            background: transparent;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            color: #333;
+        }
+
+        .prompt-textarea:focus {
+            outline: none;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💭 アイデア独り言ツール</h1>
+            <p>セルフ・オーサーシップの観点からアイデアを評価するためのプロンプト生成ツール</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>🎯 このツールの目的</h2>
+                <p>現在検討中のアイデアについて、セルフ・オーサーシップの観点から生成AIにフィードバックをもらうためのプロンプトを生成します。</p>
+                
+                <div class="info-box">
+                    <p>
+                        💡 <strong>効果的な活用方法</strong><br>
+                        最終的に生成AIにプロンプトを入力する際は、作成中の企画書・提案書も添付して実行するとより効果的です。
+                    </p>
+                </div>
+                
+                <div class="warning-box">
+                    <p>
+                        ⚠️ <strong>重要な注意事項</strong><br>
+                        • 生成AIの利用にあたってはプライバシーや機密情報に十分注意してください<br>
+                        • 企画書に対するフィードバックをもらう場合は、セキュリティの観点から<strong>Microsoft Copilot</strong>を利用してください<br>
+                        • <strong>GPT-5をオンにした上で実行</strong>してください
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <label for="ideaContent">アイデア・企画の概要</label>
+                <textarea id="ideaContent" 
+                    placeholder="検討中のアイデアや企画の内容を入力してください。&#10;- 背景・目的&#10;- 具体的な内容&#10;- 対象者&#10;- 期待する効果など"
+                    rows="8"></textarea>
+            </div>
+
+            <div class="section">
+                <h2>📋 フィードバックの観点（複数選択可）</h2>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="recognizing" value="recognizing" checked>
+                        <label for="recognizing">認識論的次元：私はどのように知るのか？</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="intrapersonal" value="intrapersonal" checked>
+                        <label for="intrapersonal">対自関係次元：私は何者か？</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="interpersonal" value="interpersonal" checked>
+                        <label for="interpersonal">対人関係次元：他者とどのように関わるか？</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="phases" value="phases" checked>
+                        <label for="phases">成長段階の考慮</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 特に重視したい点</h2>
+                <div class="radio-group">
+                    <div class="radio-item">
+                        <input type="radio" name="focusArea" value="balanced" id="balanced" checked>
+                        <label for="balanced">バランスの取れた総合的な評価</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="focusArea" value="theory" id="theory">
+                        <label for="theory">理念・理論面の深い検討</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="focusArea" value="practice" id="practice">
+                        <label for="practice">実践・実装面の具体的検討</label>
+                    </div>
+                    <div class="radio-item">
+                        <input type="radio" name="focusArea" value="student-centered" id="student-centered">
+                        <label for="student-centered">学生の主体性と成長</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generateFeedbackPrompt()">
+                    プロンプトを生成
+                </button>
+                <button class="btn btn-secondary" onclick="resetForm()">
+                    フォームをリセット
+                </button>
+            </div>
+
+            <div id="generatedPrompt" class="result-section">
+                <div id="completionMessage" class="completion-message">
+                    <h4>✅ プロンプト生成完了！</h4>
+                    <p>以下のプロンプトをコピーして生成AIに投入してください</p>
+                    <div class="security-notice">
+                        <p>
+                            ⚠️ <strong>生成AI投入時の重要な注意点</strong><br>
+                            • <strong>Microsoft Copilot</strong>を使用してください（セキュリティ確保のため）<br>
+                            • <strong>GPT-5をオンにして実行</strong>してください<br>
+                            • 企画書・提案書があれば一緒に添付すると効果的です<br>
+                            • プライバシーや機密情報にご注意ください
+                        </p>
+                    </div>
+                </div>
+                
+                <h2>📝 生成されたプロンプト</h2>
+                <div class="prompt-output">
+                    <textarea id="promptOutput" class="prompt-textarea" readonly></textarea>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-success" onclick="copyPromptToClipboard()">
+                        📋 クリップボードにコピー
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>セルフ・オーサーシップ理論に基づく学生支援のためのツール</p>
+        </div>
+    </div>
+
+    <script>
+        function generateFeedbackPrompt() {
+            const ideaContent = document.getElementById('ideaContent').value.trim();
+            const focusArea = document.querySelector('input[name="focusArea"]:checked').value;
+            
+            if (!ideaContent) {
+                alert('アイデア・企画の概要を入力してください。');
+                return;
+            }
+            
+            // チェックされた観点を取得
+            const selectedAspects = [];
+            if (document.getElementById('recognizing').checked) selectedAspects.push('認識論的次元（Epistemological）');
+            if (document.getElementById('intrapersonal').checked) selectedAspects.push('対自関係次元（Intrapersonal）');
+            if (document.getElementById('interpersonal').checked) selectedAspects.push('対人関係次元（Interpersonal）');
+            if (document.getElementById('phases').checked) selectedAspects.push('成長段階の考慮');
+            
+            const focusDescriptions = {
+                'balanced': 'バランスの取れた総合的な評価',
+                'theory': '理念・理論面の深い検討',
+                'practice': '実践・実装面の具体的検討',
+                'student-centered': '学生の主体性と成長',
+            };
+            
+            const prompt = generateDetailedPrompt(ideaContent, selectedAspects, focusDescriptions[focusArea]);
+            
+            document.getElementById('promptOutput').value = prompt;
+            document.getElementById('generatedPrompt').style.display = 'block';
+            
+            // 完了メッセージまでスクロール
+            setTimeout(() => {
+                document.getElementById('completionMessage').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        }
+        
+        function generateDetailedPrompt(ideaContent, aspects, focusArea) {
+            return `# セルフ・オーサーシップを重視した学生支援策のアイデア評価
+
+以下の学生支援のアイデア・企画について、セルフ・オーサーシップ理論の観点から建設的なフィードバックをお願いします。
+
+## 評価対象のアイデア・企画
+${ideaContent}
+
+## フィードバックの観点
+重視する観点：${focusArea}
+評価する次元：${aspects.join('、')}
+
+## セルフ・オーサーシップ理論の要点
+セルフ・オーサーシップとは「自分自身の信念、価値観、アイデンティティ、社会関係を内的に定義する能力」で、以下の3つの次元があります：
+
+1. **認識論的次元（Epistemological）**: 知識や真理をどう捉えるか
+   - 外的権威からの脱却 → 内的な知識構築能力の発達
+   - 複数の視点を統合し、文脈に応じた判断ができる
+
+2. **対自関係次元（Intrapersonal）**: 自己概念やアイデンティティ
+   - 他者からの承認依存 → 内的な価値観・信念の確立
+   - 自分らしさを追求し、一貫したアイデンティティを構築
+
+3. **対人関係次元（Interpersonal）**: 他者との関係性
+   - 他者に合わせる → 相互に尊重し合う関係性の構築
+   - 自分の価値観を保ちながら、他者と建設的な関係を築く
+
+## 成長段階
+- **第1段階（外的定式化）**: 外的権威に依存
+- **第2段階（岐路）**: 内的声と外的影響の間で揺れ動く
+- **第3段階（セルフ・オーサーシップ）**: 内的に定義された信念・価値観に基づいて行動
+
+## 求めるフィードバック
+
+### 1. 理念面の評価
+- このアイデアは学生のセルフ・オーサーシップの変容をどのように後押しする可能性がありますか？
+- 各次元（認識論的、対自関係、対人関係）への配慮は十分でしょうか？
+- 成長段階に応じた支援になっているでしょうか？
+
+### 2. 実践面の評価
+- 実際の実装において、学生の主体性を損なうリスクはありませんか？
+- 運営側が外的権威として機能してしまう可能性はありませんか？
+- より効果的な実践方法があれば提案してください。
+
+### 3. 企画運営側への問いかけ
+このアイデアを実践する自分達自身の成長にもつながるように：
+- どのような問いかけや振り返りが必要でしょうか？
+- 企画時に滑り込んできやすい思考の癖、言葉遣い、意識下のバイアスは何でしょうか？
+- 様々な取り組みが有機的に連携し学生の成長を後押しする環境の創発に必要なことはどのようなものがありますか？
+
+## お願い
+遠慮のない率直なフィードバックをお願いします。改善点や懸念点があれば具体的に指摘してください。また、このアイデアをより効果的にするための建設的な提案もお願いします。`;
+        }
+        
+        function copyPromptToClipboard() {
+            const promptText = document.getElementById('promptOutput').value;
+            navigator.clipboard.writeText(promptText).then(function() {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ コピー完了！';
+                button.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'linear-gradient(135deg, #51cf66, #006600)';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('コピーに失敗しました: ', err);
+                alert('コピーに失敗しました。手動でテキストを選択してコピーしてください。');
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('ideaContent').value = '';
+            document.getElementById('recognizing').checked = true;
+            document.getElementById('intrapersonal').checked = true;
+            document.getElementById('interpersonal').checked = true;
+            document.getElementById('phases').checked = true;
+            document.getElementById('balanced').checked = true;
+            document.getElementById('generatedPrompt').style.display = 'none';
+            document.getElementById('ideaContent').focus();
+        }
+
+        // ページ読み込み時にテキストエリアにフォーカス
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('ideaContent').focus();
+        });
+    </script>
+</body>
+</html>
